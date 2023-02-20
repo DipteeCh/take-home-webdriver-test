@@ -9,14 +9,13 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.testng.Assert;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 public class TheInternetTest{
 	WebDriver driver = null;
-	@BeforeTest
+
+	@BeforeClass
 	public void setUp() {
 		WebDriverManager.chromedriver().setup();
 		driver = new ChromeDriver();
@@ -28,12 +27,12 @@ public class TheInternetTest{
 
 	@Test
 	public void loginSuccess() {
-
 		driver.get("http://localhost:7080/login");
 		driver.findElement(By.id("username")).sendKeys("tomsmith");
 		driver.findElement(By.id("password")).sendKeys("SuperSecretPassword!");
 		driver.findElement(By.className("radius")).click();
 		driver.findElement(By.linkText("Logout"));
+		Assert.assertEquals(driver.findElement(By.className("subheader")).getText(), "Welcome to the Secure Area. When you are done click logout below.");
 	}
 
 	@Test
@@ -56,7 +55,8 @@ public class TheInternetTest{
 				Assert.assertFalse(checkBox.isSelected());
 
 			if(checkBox.getText().equalsIgnoreCase("checbox 2"))
-				Assert.assertTrue(checkBox.isSelected()); }
+				Assert.assertTrue(checkBox.isSelected());
+		}
 
 	}
 
@@ -89,7 +89,7 @@ public class TheInternetTest{
 
 	}
 
-	@AfterTest
+	@AfterClass
 	public void close() {
 		driver.close();
 		driver.quit();
