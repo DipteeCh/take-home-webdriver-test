@@ -8,6 +8,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.*;
 
@@ -75,23 +76,50 @@ public class TheInternetTest{
 	@Test
 	public void dragAnddropTest() throws InterruptedException {
 		driver.get("http://localhost:7080/drag_and_drop");
-		WebElement BoxA = driver.findElement(By.id("column-b"));
-		WebElement BoxB = driver.findElement(By.id("column-a"));
+		WebElement boxLeft = driver.findElement(By.id("column-b"));
+		WebElement boxRight = driver.findElement(By.id("column-a"));
 
+		String textLeftElement = boxLeft.getText().trim(); //A
+		String textRightElement = boxRight.getText().trim(); //B
 
-		int x = BoxB.getLocation().x;
-		int y = BoxB.getLocation().y;
-
+		int x = boxRight.getLocation().x;
+		int y = boxRight.getLocation().y;
 		Actions actions = new Actions(driver);
-		actions.moveToElement(BoxA)
+
+		actions.moveToElement(boxLeft)
 				.pause(Duration.ofSeconds(1))
-				.clickAndHold(BoxA)
+				.clickAndHold(boxLeft)
 				.pause(Duration.ofSeconds(1))
-				.moveByOffset(x, y)
-				.moveToElement(BoxB)
+				.moveByOffset(x,y)
+				.moveToElement(boxRight)
 				.moveByOffset(x,y)
 				.pause(Duration.ofSeconds(1))
 				.release().build().perform();
+
+		Assert.assertEquals(boxLeft.getText(),textRightElement);
+
+	}
+
+	@Test
+	public void dropdownTest() {
+		driver.get("http://localhost:7080/dropdown");
+		WebElement dropdown = driver.findElement(By.id("dropdown"));
+		Select selectObject = new Select(dropdown);
+		List<WebElement> dropDownOptions =  selectObject.getOptions();
+		Assert.assertEquals(dropDownOptions.get(0).getText(),"Please select an option");
+		Assert.assertEquals(dropDownOptions.get(1).getText(),"Option 1");
+		Assert.assertEquals(dropDownOptions.get(2).getText(),"Option 2");
+
+	}
+	@Test
+	public void dynamiccontentTest(){
+		driver.get("http://localhost:7080/dynamic_content");
+		WebElement thirdPara = driver.findElement(By.cssSelector(".large-10.columns"));
+		String beforeRef = thirdPara.getText();
+		driver.navigate().refresh();
+		WebElement thirdParaAftRef = driver.findElement(By.cssSelector(".large-10.columns"));
+		String aftRefText = thirdParaAftRef.getText();
+		Assert.assertNotEquals(beforeRef,aftRefText);
 
 	}
 
