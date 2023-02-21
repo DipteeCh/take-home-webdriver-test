@@ -75,17 +75,23 @@ public class TheInternetTest{
 	@Test
 	public void dragAnddropTest() throws InterruptedException {
 		driver.get("http://localhost:7080/drag_and_drop");
-		WebElement BoxB = driver.findElement(By.id("column-b"));
-		WebElement BoxA = driver.findElement(By.id("column-a"));
+		WebElement BoxA = driver.findElement(By.id("column-b"));
+		WebElement BoxB = driver.findElement(By.id("column-a"));
+
+
+		int x = BoxB.getLocation().x;
+		int y = BoxB.getLocation().y;
 
 		Actions actions = new Actions(driver);
-		//actions.moveToElement(BoxA);
-		//actions.clickAndHold();
-		//actions.moveToElement(BoxB);
-
-		actions.dragAndDrop(BoxB,BoxA);
-		//Thread.sleep(5000);
-		actions.build().perform();
+		actions.moveToElement(BoxA)
+				.pause(Duration.ofSeconds(1))
+				.clickAndHold(BoxA)
+				.pause(Duration.ofSeconds(1))
+				.moveByOffset(x, y)
+				.moveToElement(BoxB)
+				.moveByOffset(x,y)
+				.pause(Duration.ofSeconds(1))
+				.release().build().perform();
 
 	}
 
